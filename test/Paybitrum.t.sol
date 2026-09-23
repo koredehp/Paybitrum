@@ -6,17 +6,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Paybitrum} from "../src/Paybitrum.sol";
 
-contract MockUSDC is ERC20 {
-    constructor() ERC20("Mock USDC", "mUSDC") {}
-
-    function mint(address to, uint256 amount) external {
-        _mint(to, amount);
-    }
-
-    function decimals() public pure override returns (uint8) {
-        return 6;
-    }
-}
+import {MockUSDC} from "../src/MockUSDC.sol";
 
 contract PaybitrumTest is Test {
     Paybitrum escrow;
