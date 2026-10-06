@@ -15,4 +15,14 @@ export const paybitrumAbi = [
   { type: 'function', name: 'claimAfterReview', stateMutability: 'nonpayable', inputs: [{ name: 'id', type: 'uint256' }], outputs: [] },
   { type: 'function', name: 'refund', stateMutability: 'nonpayable', inputs: [{ name: 'id', type: 'uint256' }], outputs: [] },
   { type: 'function', name: 'escrowCount', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+    { type: 'function', name: 'escrows', stateMutability: 'view', inputs: [{ name: '', type: 'uint256' }], outputs: [
+    { name: 'client', type: 'address' },
+    { name: 'freelancer', type: 'address' },
+    { name: 'token', type: 'address' },
+    { name: 'amount', type: 'uint256' },
+    { name: 'deadline', type: 'uint64' },
+    { name: 'submittedAt', type: 'uint64' },
+    { name: 'workHash', type: 'bytes32' },
+    { name: 'status', type: 'uint8' },
+  ] },
 ] as const

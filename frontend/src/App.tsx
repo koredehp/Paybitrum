@@ -6,6 +6,7 @@ import {
 import { arbitrumSepolia } from 'wagmi/chains'
 import { parseUnits, formatUnits, isAddress } from 'viem'
 import { PAYBITRUM_ADDRESS, USDC_ADDRESS, paybitrumAbi, erc20Abi } from './contracts'
+import EscrowManager from './EscrowManager'
 
 function toUnits(value: string): bigint | null {
   try {
@@ -150,9 +151,11 @@ export default function App() {
               Done ✓ <a href={`https://sepolia.arbiscan.io/tx/${hash}`} target="_blank">View on Arbiscan</a>
             </p>
           )}
-          {error && <p style={{ color: 'crimson' }}>Error: {error.message.split('\n')[0]}</p>}
+                    {error && <p style={{ color: 'crimson' }}>Error: {error.message.split('\n')[0]}</p>}
         </div>
       )}
+
+      {ready && <EscrowManager />}
     </div>
   )
 }
