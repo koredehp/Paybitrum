@@ -27,7 +27,7 @@ export default function EscrowManager() {
 
   if (!escrow.data) {
     return (
-      <div style={{ marginTop: 32 }}>
+      <div>
         <h2>3. Manage an escrow</h2>
         <label>Escrow ID<br />
           <input value={idInput} onChange={(e) => setIdInput(e.target.value)} />
@@ -58,7 +58,7 @@ export default function EscrowManager() {
   }
 
   return (
-    <div style={{ marginTop: 32 }}>
+    <div>
       <h2>3. Manage an escrow</h2>
       <label>Escrow ID<br />
         <input value={idInput} onChange={(e) => setIdInput(e.target.value)} />
@@ -68,7 +68,7 @@ export default function EscrowManager() {
         Client: {client}<br />
         Freelancer: {freelancer}<br />
         Amount: {formatUnits(amount, 6)} mUSDC<br />
-        Status: <strong>{statusName}</strong><br />
+        Status:  <span className={`status-pill status-${statusName}`}>{statusName}</span><br />
         Deadline: {new Date(Number(deadline) * 1000).toLocaleString()}
       </p>
 

@@ -7,6 +7,7 @@ import { arbitrumSepolia } from 'wagmi/chains'
 import { parseUnits, formatUnits, isAddress } from 'viem'
 import { PAYBITRUM_ADDRESS, USDC_ADDRESS, paybitrumAbi, erc20Abi } from './contracts'
 import EscrowManager from './EscrowManager'
+import './App.css'
 
 function toUnits(value: string): bigint | null {
   try {
@@ -91,71 +92,132 @@ export default function App() {
   const busy = isPending || receipt.isLoading
 
   return (
-    <div style={{ maxWidth: 520, margin: '40px auto', fontFamily: 'sans-serif' }}>
-      <h1>Paybitrum</h1>
-      <p>Escrow payments for remote work, on Arbitrum.</p>
+    <div className="page">
+      <div className="hero">
+        <span className="badge">Arbitrum Sepolia · Testnet</span>
+        <h1>Paybitrum</h1>
+        <p>
+          Trustless escrow for remote work. Funds lock on-chain the moment a
+          client hires, and release automatically once the work is approved,
+          no invoices, no chasing payments, no middleman.
+        </p>
+      </div>
 
-      {!isConnected && (
-        <button onClick={() => connect({ connector: connectors[0] })}>Connect wallet</button>
-      )}
+      <div className="steps">
+        <div className="step">
+          <div className="num">1</div>
+          <h3>Client funds escrow</h3>
+          <p>Payment locks in the contract before work starts.</p>
+        </div>
+        <div className="step">
+          <div className="num">2</div>
+          <h3>Freelancer delivers</h3>
+          <p>Work is submitted on-chain as proof of delivery.</p>
+        </div>
+        <div className="step">
+          <div className="num">3</div>
+          <h3>Payment releases</h3>
+          <p>Client approves, or the rules release it automatically.</p>
+        </div>
+      </div>
 
-      {isConnected && (
-        <div>
-          <p>Connected: {address}</p>
-          {wrongNetwork ? (
-            <div>
-              <p>Wrong network. Please switch to Arbitrum Sepolia.</p>
-              <button onClick={() => switchChain({ chainId: arbitrumSepolia.id })}>
+      <div className="card">
+        <h2>Wallet</h2>
+        <p className="subtitle">Connect to interact with the live testnet contracts.</p>
+
+        {!isConnected && (
+          <button onClick={() => connect({ connector: connectors[0] })}>Connect wallet</button>
+        )}
+
+        {isConnected && (
+          <div>
+            <div className="detail-row">
+              <span className="label">Address</span>
+              <span className="value">{address}</span>
+            </div>
+            <div className="detail-row">
+              <span className="label">Network</span>
+              <span className="value">{wrongNetwork ? 'Unsupported' : 'Arbitrum Sepolia ✓'}</span>
+            </div>
+            {wrongNetwork && (
+              <button onClick={() => switchChain({ chainId: arbitrumSepolia.id })} style={{ marginTop: 12 }}>
                 Switch to Arbitrum Sepolia
               </button>
-            </div>
-          ) : (
-            <p>Network: Arbitrum Sepolia ✓</p>
-          )}
-          <button onClick={() => disconnect()}>Disconnect</button>
-        </div>
-      )}
+            )}
+            <button className="secondary" onClick={() => disconnect()} style={{ marginTop: 12 }}>
+              Disconnect
+            </button>
+          </div>
+        )}
+      </div>
 
       {ready && (
-        <div style={{ marginTop: 32 }}>
-          <h2>1. Get test USDC</h2>
-          <p>Your balance: {balance.data !== undefined ? formatUnits(balance.data, 6) : '...'} mUSDC</p>
-          <button disabled={busy} onClick={mint}>Mint 1,000 test USDC</button>
+        <>
+          <div className="card">
+            <h2>1. Get test USDC</h2>
+            <p className="subtitle">Mint free testnet tokens to try the flow.</p>
+            <div className="detail-row">
+              <span className="label">Your balance</span>
+              <span className="value">{balance.data !== undefined ? formatUnits(balance.data, 6) : '...'} mUSDC</span>
+            </div>
+            <button disabled={busy} onClick={mint} style={{ marginTop: 16 }}>Mint 1,000 test USDC</button>
+          </div>
 
-          <h2 style={{ marginTop: 32 }}>2. Create an escrow</h2>
-          <label>Freelancer address<br />
-            <input style={{ width: '100%' }} value={freelancer} placeholder="0x..."
-              onChange={(e) => setFreelancer(e.target.value)} />
-          </label>
-          <p />
-          <label>Amount (mUSDC)<br />
-            <input value={amount} onChange={(e) => setAmount(e.target.value)} />
-          </label>
-          <p />
-          <label>Deadline (days from now)<br />
-            <input value={days} onChange={(e) => setDays(e.target.value)} />
-          </label>
-          <p />
-          {needsApproval ? (
-            <button disabled={busy || !formOk} onClick={approve}>Step A: Approve USDC</button>
-          ) : (
-            <button disabled={busy || !formOk} onClick={createEscrow}>Step B: Create escrow</button>
-          )}
+          <div className="card">
+            <h2>2. Create an escrow</h2>
+            <p className="subtitle">Lock payment for a freelancer before work begins.</p>
+            <label>Freelancer address
+              <input value={freelancer} placeholder="0x..." onChange={(e) => setFreelancer(e.target.value)} />
+            </label>
+            <label>Amount (mUSDC)
+              <input value={amount} onChange={(e) => setAmount(e.target.value)} />
+            </label>
+            <label>Deadline (days from now)
+              <input value={days} onChange={(e) => setDays(e.target.value)} />
+            </label>
 
-          <p>Escrows created so far: {count.data?.toString() ?? '...'}</p>
+            {needsApproval ? (
+              <button disabled={busy || !formOk} onClick={approve}>Step A: Approve USDC</button>
+            ) : (
+              <button disabled={busy || !formOk} onClick={createEscrow}>Step B: Create escrow</button>
+            )}
 
-          {isPending && <p>Confirm in your wallet...</p>}
-          {receipt.isLoading && <p>Waiting for the transaction to confirm...</p>}
-          {receipt.isSuccess && (
-            <p>
-              Done ✓ <a href={`https://sepolia.arbiscan.io/tx/${hash}`} target="_blank">View on Arbiscan</a>
-            </p>
-          )}
-                    {error && <p style={{ color: 'crimson' }}>Error: {error.message.split('\n')[0]}</p>}
-        </div>
+            <div className="detail-row" style={{ marginTop: 16 }}>
+              <span className="label">Escrows created so far</span>
+              <span className="value">{count.data?.toString() ?? '...'}</span>
+            </div>
+
+            {isPending && <p className="pending-text">Confirm in your wallet...</p>}
+            {receipt.isLoading && <p className="pending-text">Waiting for confirmation...</p>}
+            {receipt.isSuccess && (
+              <div className="success-box">
+                Done ✓ <a href={`https://sepolia.arbiscan.io/tx/${hash}`} target="_blank" rel="noreferrer">View on Arbiscan</a>
+              </div>
+            )}
+            {error && <div className="error-box">{error.message.split('\n')[0]}</div>}
+          </div>
+
+          <div className="card">
+            <EscrowManager />
+          </div>
+        </>
       )}
 
-      {ready && <EscrowManager />}
+      <div className="card">
+        <h2>Why Paybitrum</h2>
+        <p className="subtitle">Built for remote freelance work, where trust is hard to establish and cross-border payments are slow and costly.</p>
+        <div className="detail-row"><span className="label">No shared legal system</span><span className="value">Escrow replaces the need for one</span></div>
+        <div className="detail-row"><span className="label">Slow bank transfers</span><span className="value">Settlement in seconds on Arbitrum</span></div>
+        <div className="detail-row"><span className="label">Client disappears</span><span className="value">Auto-claim after a 7-day review window</span></div>
+        <div className="detail-row"><span className="label">Freelancer ghosts</span><span className="value">Client can refund after the deadline</span></div>
+      </div>
+
+      <div className="footer-note">
+        Deployed on Arbitrum Sepolia testnet. Read the contract source on{' '}
+        <a href="https://sepolia.arbiscan.io/address/0x4A4234c59A19685eeDd77f1357e7ff2B33477F76" target="_blank" rel="noreferrer">
+          Arbiscan
+        </a>.
+      </div>
     </div>
   )
 }
