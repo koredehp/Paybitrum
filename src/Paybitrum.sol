@@ -10,7 +10,13 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 contract Paybitrum is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    enum Status { None, Funded, Submitted, Released, Refunded }
+    enum Status {
+        None,
+        Funded,
+        Submitted,
+        Released,
+        Refunded
+    }
 
     struct Escrow {
         address client;
@@ -28,7 +34,14 @@ contract Paybitrum is ReentrancyGuard {
     uint256 public escrowCount;
     mapping(uint256 => Escrow) public escrows;
 
-    event EscrowCreated(uint256 indexed id, address indexed client, address indexed freelancer, address token, uint256 amount, uint64 deadline);
+    event EscrowCreated(
+        uint256 indexed id,
+        address indexed client,
+        address indexed freelancer,
+        address token,
+        uint256 amount,
+        uint64 deadline
+    );
     event WorkSubmitted(uint256 indexed id, bytes32 workHash);
     event Released(uint256 indexed id, address indexed freelancer, uint256 amount);
     event Refunded(uint256 indexed id, address indexed client, uint256 amount);
