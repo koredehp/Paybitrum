@@ -2,6 +2,8 @@
 
 Escrow payments for remote work, built on Arbitrum.
 
+**Live demo:** https://paybitrum.vercel.app
+
 Freelancers and clients often work across borders with no shared legal system
 and no trusted intermediary. Paybitrum removes the need for trust between
 strangers by locking payment in a smart contract before work begins, and

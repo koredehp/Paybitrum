@@ -1,5 +1,9 @@
 # Deployments
 
+## Live app
+
+https://paybitrum.vercel.app
+
 ## Arbitrum Sepolia (testnet)
 
 - Paybitrum escrow: `0x4A4234c59A19685eeDd77f1357e7ff2B33477F76`
